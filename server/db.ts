@@ -89,4 +89,96 @@ export async function getUserByOpenId(openId: string) {
   return result.length > 0 ? result[0] : undefined;
 }
 
-// TODO: add feature queries here as your schema grows.
+// 템플릿 관련 쿼리
+export async function getTemplatesByUserId(userId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  const { templates } = await import("../drizzle/schema");
+  return db.select().from(templates).where(eq(templates.userId, userId));
+}
+
+export async function getTemplateById(templateId: number) {
+  const db = await getDb();
+  if (!db) return undefined;
+  const { templates } = await import("../drizzle/schema");
+  const result = await db.select().from(templates).where(eq(templates.id, templateId)).limit(1);
+  return result.length > 0 ? result[0] : undefined;
+}
+
+export async function createTemplate(data: { userId: number; name: string; fileKey: string; fileUrl: string; slideCount: number }) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  const { templates } = await import("../drizzle/schema");
+  const result = await db.insert(templates).values(data);
+  return result;
+}
+
+export async function deleteTemplate(templateId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  const { templates } = await import("../drizzle/schema");
+  await db.delete(templates).where(eq(templates.id, templateId));
+}
+
+export async function countTemplatesByUserId(userId: number): Promise<number> {
+  const db = await getDb();
+  if (!db) return 0;
+  const { templates } = await import("../drizzle/schema");
+  const result = await db.select().from(templates).where(eq(templates.userId, userId));
+  return result.length;
+}
+
+// 구독 관련 쿼리
+export async function getSubscriptionByUserId(userId: number) {
+  const db = await getDb();
+  if (!db) return undefined;
+  const { subscriptions } = await import("../drizzle/schema");
+  const result = await db.select().from(subscriptions).where(eq(subscriptions.userId, userId)).limit(1);
+  return result.length > 0 ? result[0] : undefined;
+}
+
+export async function createSubscription(data: { userId: number; tier?: "free" | "monthly" | "lifetime" }) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  const { subscriptions } = await import("../drizzle/schema");
+  const result = await db.insert(subscriptions).values(data);
+  return result;
+}
+
+export async function updateSubscription(userId: number, data: Partial<{ tier: "free" | "monthly" | "lifetime"; stripeCustomerId: string; stripeSubscriptionId: string; startedAt: Date; expiresAt: Date | null; status: "active" | "canceled" | "expired" }>) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  const { subscriptions } = await import("../drizzle/schema");
+  await db.update(subscriptions).set(data).where(eq(subscriptions.userId, userId));
+}
+
+// 변환 작업 관련 쿼리
+export async function createConversionJob(data: { userId: number; templateId: number; excelFileKey: string; excelFileUrl: string; wordPairCount: number }) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  const { conversionJobs } = await import("../drizzle/schema");
+  const result = await db.insert(conversionJobs).values(data);
+  return result;
+}
+
+export async function getConversionJobById(jobId: number) {
+  const db = await getDb();
+  if (!db) return undefined;
+  const { conversionJobs } = await import("../drizzle/schema");
+  const result = await db.select().from(conversionJobs).where(eq(conversionJobs.id, jobId)).limit(1);
+  return result.length > 0 ? result[0] : undefined;
+}
+
+export async function updateConversionJob(jobId: number, data: Partial<{ status: "pending" | "processing" | "completed" | "failed"; resultFileKey: string; resultFileUrl: string; errorMessage: string }>) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  const { conversionJobs } = await import("../drizzle/schema");
+  await db.update(conversionJobs).set(data).where(eq(conversionJobs.id, jobId));
+}
+
+export async function getConversionJobsByUserId(userId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  const { conversionJobs } = await import("../drizzle/schema");
+  return db.select().from(conversionJobs).where(eq(conversionJobs.userId, userId));
+}
