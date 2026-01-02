@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
 PPT 템플릿 변환 스크립트
 엑셀 파일의 'Start Word'와 'End Word' 열을 읽어 PPT 템플릿의 텍스트를 치환하고,
@@ -9,9 +10,19 @@ PPT 템플릿 변환 스크립트
 """
 
 import sys
+import os
+
+# 타입 체킹 비활성화
+os.environ['PYTHONDONTWRITEBYTECODE'] = '1'
+
 import json
 import pandas as pd
-from pptx import Presentation
+
+try:
+    from pptx import Presentation
+except ImportError as e:
+    print(f"Error: python-pptx 패키지를 찾을 수 없습니다: {e}", file=sys.stderr)
+    sys.exit(1)
 from pptx.util import Inches
 from PIL import Image as PILImage
 import io

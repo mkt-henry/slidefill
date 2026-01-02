@@ -339,12 +339,18 @@ async function processConversion(
     const scriptPath = path.join(process.cwd(), "scripts", "convert_ppt.py");
     const venvPython = path.join(process.cwd(), "venv", "bin", "python");
     
-    const args = [scriptPath, templatePath, excelPath, outputPath];
+    const args = ["-B", scriptPath, templatePath, excelPath, outputPath];
     if (Object.keys(localImageMappings).length > 0) {
       args.push(JSON.stringify(localImageMappings));
     }
     
-    const pythonProcess = spawn(venvPython, args);
+    const pythonProcess = spawn(venvPython, args, {
+      env: {
+        ...process.env,
+        PYTHONDONTWRITEBYTECODE: "1",
+        PYTHONUNBUFFERED: "1",
+      },
+    });
     
     let stdout = "";
     let stderr = "";

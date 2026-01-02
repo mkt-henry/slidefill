@@ -131,7 +131,11 @@ export default function Home() {
                 <span>치환 단어 10개 이하</span>
               </li>
             </ul>
-            <Button variant="outline" className="w-full">
+            <Button 
+              variant="outline" 
+              className="w-full"
+              onClick={() => window.location.href = isAuthenticated ? "/dashboard" : getLoginUrl()}
+            >
               시작하기
             </Button>
           </div>
@@ -162,7 +166,11 @@ export default function Home() {
                 <span>무제한 치환 단어</span>
               </li>
             </ul>
-            <Button variant="secondary" className="w-full bg-white text-blue-600 hover:bg-gray-100">
+            <Button 
+              variant="secondary" 
+              className="w-full bg-white text-blue-600 hover:bg-gray-100"
+              onClick={() => window.location.href = isAuthenticated ? "/dashboard" : getLoginUrl()}
+            >
               구독하기
             </Button>
           </div>
@@ -190,7 +198,11 @@ export default function Home() {
                 <span>무제한 치환 단어</span>
               </li>
             </ul>
-            <Button variant="outline" className="w-full">
+            <Button 
+              variant="outline" 
+              className="w-full"
+              onClick={() => window.location.href = isAuthenticated ? "/dashboard" : getLoginUrl()}
+            >
               구매하기
             </Button>
           </div>

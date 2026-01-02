@@ -16,7 +16,14 @@ export async function getSlideCount(filePath: string): Promise<number> {
     const venvPython = path.join(process.cwd(), "venv", "bin", "python");
     const scriptPath = path.join(process.cwd(), "scripts", "get_slide_count.py");
     
-    const pythonProcess = spawn(venvPython, [scriptPath, filePath]);
+    // Python 실행 시 타입 체킹 비활성화
+    const pythonProcess = spawn(venvPython, ["-B", scriptPath, filePath], {
+      env: {
+        ...process.env,
+        PYTHONDONTWRITEBYTECODE: "1",
+        PYTHONUNBUFFERED: "1",
+      },
+    });
     
     let stdout = "";
     let stderr = "";

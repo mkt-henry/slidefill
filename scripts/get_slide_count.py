@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
 PPT 파일의 슬라이드 수를 계산하는 스크립트
 
@@ -7,7 +8,16 @@ PPT 파일의 슬라이드 수를 계산하는 스크립트
 """
 
 import sys
-from pptx import Presentation
+import os
+
+# 타입 체킹 비활성화
+os.environ['PYTHONDONTWRITEBYTECODE'] = '1'
+
+try:
+    from pptx import Presentation
+except ImportError as e:
+    print(f"Error: python-pptx 패키지를 찾을 수 없습니다: {e}", file=sys.stderr)
+    sys.exit(1)
 
 
 def get_slide_count(ppt_path):
